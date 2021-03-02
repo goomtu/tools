@@ -12,7 +12,7 @@ import time
 
 
 
-wechatUrl = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=e1fbff47-a75f-47a9-ab4d-96e9a2c8bfa4';
+wechatUrl = '';
 lastHerf = ''
 load_dict = {};
 
@@ -20,6 +20,7 @@ with open("./config.json",'r') as load_f:
     load_dict = json.load(load_f)
     wechatUrl = load_dict['wechat']
     lastHerf = load_dict['last']
+
 
 
 
