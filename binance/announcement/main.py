@@ -12,9 +12,9 @@ import time
 
 
 
-wechatUrl = '';
+wechatUrl = ''
 lastHerf = ''
-load_dict = {};
+load_dict = {}
 
 with open("./config.json",'r') as load_f:
     load_dict = json.load(load_f)

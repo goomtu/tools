@@ -1,4 +1,5 @@
 beautifulsoup4==4.9.3
 discord_webhook==0.11.0
 schedule==1.0.0
+pandas==1.2.2
 
