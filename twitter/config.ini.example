@@ -1,0 +1,15 @@
+[config]
+consumer_key = consumer_key
+consumer_secret = consumer_secret
+access_token = consumer_key-access_token
+access_token_secret = access_token_secret
+# 微信机器人URL
+wechaturl = wechaturl 
+
+
+
+
+# 最新推文id 无需手动配置 
+[status]
+id = 
+
