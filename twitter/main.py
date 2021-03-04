@@ -19,18 +19,7 @@ WECHAT_URL = config.get('config','wechatUrl')
 
 statusId = config.get('status','id')
 
-
-
-
-
 api = twitter.Api(CONSUMER_KEY,CONSUMER_SECRET,ACCESS_TOKEN,ACCESS_TOKEN_SECRET)
-
-
-
-
-
-
-
 
 
 # 更新本地 配置文件 statusID
@@ -44,40 +33,57 @@ def upDateConfig():
 
 #发送通知短信
 def senMsg(favorite):
-    
-   
-
-    data = json.dumps(
-        {
-            'msgtype': 'markdown',
-           
-            'markdown':{
-                'content': f'''
+    try:
+        data = api.GetStatus(favorite.id).text
+        print("get one status now, msg: ", data)
+        
+        data = json.dumps(
+            {
+                'msgtype': 'markdown',
+            
+                'markdown':{
+                    'content': f'''
 <font color="warning">{favorite.user.name}</font>
-{favorite.text}
-                '''
-            },
-           
-        }
-    )
-    post(
-        WECHAT_URL,
-        data=data
-    )
+{data}
+                    '''
+                },
+            
+            }
+        )
+
+        post(
+            WECHAT_URL,
+            data=data
+        )
+
+    except Exception as e:
+        console.log("Error senMsg, err: ", e)
 
 
 
 # 检查
 def favorite():
     global statusId #注明是用全局 statusId
-    favorite = api.GetHomeTimeline()[0]
-    if favorite.id != statusId:
-        statusId = favorite.id
-        # upDateConfig()
-        senMsg(favorite)
+
+    try:
+        favorite = api.GetHomeTimeline(count=5)
+        print(favorite)
+
+        for one in favorite:
+            if str(one.id) != str(statusId):
+                senMsg(one)
+            else:
+                break
+
+        statusId = favorite[0].id
+        upDateConfig()
+    
+    except Exception as e:
+        console.log("Error get favorite, err: ", e)
 
 
+# 定时执行，twitter限制为每分钟1次调用
+schedule.every(120).seconds.do(favorite)
 
-schedule.every(30).seconds.do(favorite)
 while True:
     schedule.run_pending()
