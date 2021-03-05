@@ -4,7 +4,7 @@ import configparser
 from requests import post 
 import json
 import schedule
-
+from markdownify import markdownify as md
 fileName = 'config.ini'
 config = configparser.ConfigParser()
 config.read(fileName)
@@ -34,8 +34,9 @@ def upDateConfig():
 #发送通知短信
 def senMsg(favorite):
     try:
-        data = api.GetStatus(favorite.id).text
-        print("get one status now, msg: ", data)
+        html = api.GetStatusOembed(favorite.id)['html']
+        html = md(html,strip = ['script'])
+        print("get one status now, msg: ", html)
         
         data = json.dumps(
             {
@@ -44,7 +45,7 @@ def senMsg(favorite):
                 'markdown':{
                     'content': f'''
 <font color="warning">{favorite.user.name}</font>
-{data}
+{html}
                     '''
                 },
             
@@ -82,7 +83,7 @@ def favorite():
         console.log("Error get favorite, err: ", e)
 
 
-# 定时执行，twitter限制为每分钟1次调用
+定时执行，twitter限制为每分钟1次调用
 schedule.every(120).seconds.do(favorite)
 
 while True:
